@@ -14,7 +14,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Simple GDNative C Demo"
+config/name="fakepc"
 config/description="Simple GDNative C Demo"
 run/main_scene="res://main.tscn"
 config/icon="res://icon.png"
@@ -32,3 +32,4 @@ multithread/thread_rid_pool_prealloc=60
 quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
+quality/filters/msaa=2
