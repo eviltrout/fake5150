@@ -39,18 +39,12 @@ static struct gfx_driver gfx_godot = {
 extern struct gfx_driver *gfx;
 
 
-// GDNative supports a large collection of functions for calling back
-// into the main Godot executable. In order for your module to have
-// access to these functions, GDNative provides your application with
-// a struct containing pointers to all these functions.
 const godot_gdnative_core_api_struct *api = NULL;
 const godot_gdnative_ext_nativescript_api_struct *nativescript_api = NULL;
-
-// These are forward declarations for the functions we'll be implementing
-// for our object. A constructor and destructor are both necessary.
 GDCALLINGCONV void *sarien_constructor(godot_object *p_instance, void *p_method_data);
 GDCALLINGCONV void sarien_destructor(godot_object *p_instance, void *p_method_data, void *p_user_data);
 godot_variant sarien_get_frame(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args);
+
 void init_sarien(user_data_struct *user_data);
 void sarien_tick(void);
 
