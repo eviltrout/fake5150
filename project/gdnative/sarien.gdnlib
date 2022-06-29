@@ -1,0 +1,20 @@
+[general]
+
+singleton=false
+load_once=true
+symbol_prefix="godot_"
+reloadable=true
+
+[entry]
+
+Windows.64="res://gdnative/windows/libsarien.dll"
+OSX.64="res://gdnative/macos/libsarien.dylib"
+X11.64="res://gdnative/linuxbsd/libsarien.so"
+Server.64="res://gdnative/linuxbsd/libsarien.so"
+
+[dependencies]
+
+Windows.64=[  ]
+OSX.64=[  ]
+X11.64=[  ]
+Server.64=[  ]

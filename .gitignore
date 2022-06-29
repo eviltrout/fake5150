@@ -1,0 +1,7 @@
+.import
+.sconsign.dblite
+import
+*.bak
+*.o
+*.os
+sq1

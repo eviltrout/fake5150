@@ -1,0 +1,11 @@
+[gd_resource type="NativeScript" load_steps=2 format=2]
+
+[ext_resource path="res://gdnative/sarien.gdnlib" type="GDNativeLibrary" id=1]
+
+[resource]
+
+resource_name = "SARIEN"
+class_name = "SARIEN"
+library = ExtResource( 1 )
+_sections_unfolded = [ "Resource" ]
+
