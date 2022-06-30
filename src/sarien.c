@@ -13,6 +13,8 @@ typedef struct user_data_struct {
 	godot_pool_byte_array vram;
 } user_data_struct;
 
+unsigned char godot_pal[16*3] = { 0 };
+
 static int loaded_sarien = 0;
 
 struct sarien_options opt;
@@ -92,7 +94,7 @@ void init_sarien(user_data_struct *user_data) {
   clock_count = 0;
   clock_ticks = 0;
 
-  if (agi_detect_game("sq1") == err_OK) {
+  if (agi_detect_game("game") == err_OK) {
     et_log("loaded sarien %x, %x", game.crc, game.ver);
 
     game.sbuf = calloc (_WIDTH, _HEIGHT);
@@ -158,6 +160,10 @@ void init_sarien(user_data_struct *user_data) {
 
 static int init_vidmode  (void) {
   et_log("init_vidmode");
+
+  for (int i=0; i<16*3; i++) {
+    godot_pal[i] = palette[i] << 2;
+  }
   return err_OK;
 }
 
@@ -175,7 +181,7 @@ static void godot_put_block (int x1, int y1, int x2, int y2) {
 static void godot_putpixels  (int x, int y, int w, unsigned char *pixels) {
   unsigned char *v = vram_ptr + ((y * 320) + x) * 3;
   for (int i=0; i<w; i++) {
-    unsigned char *c = palette + (*(pixels++) * 3);
+    unsigned char *c = godot_pal + (*(pixels++) * 3);
     *(v++) = *(c++);
     *(v++) = *(c++);
     *(v++) = *(c++);

@@ -18,6 +18,7 @@ background_color = Color( 0.0745098, 0.0666667, 0.266667, 1 )
 background_energy = 4.03
 ambient_light_color = Color( 0.756863, 0.764706, 0.466667, 1 )
 ambient_light_energy = 0.28
+glow_enabled = true
 glow_high_quality = true
 
 [sub_resource type="SpatialMaterial" id=5]
@@ -42,7 +43,7 @@ ao_texture_channel = 0
 script = ExtResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.913204, 0.407502, 0, -0.407502, 0.913204, -0.051, 1.117, 2.151 )
+transform = Transform( 0.941741, 0.136029, -0.307604, 0, 0.914564, 0.404439, 0.336339, -0.380877, 0.861283, -0.803, 1.183, 2.231 )
 current = true
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
@@ -60,7 +61,6 @@ skeleton = NodePath("../..")
 material/0 = SubResource( 5 )
 
 [node name="screen" type="MeshInstance" parent="PC"]
-transform = Transform( 1, 0, 0, 0, 1.2, 0, 0, 0, 1, -0.00499082, -0.19569, -0.0138354 )
 mesh = ExtResource( 4 )
 skeleton = NodePath("../..")
 material/0 = ExtResource( 5 )

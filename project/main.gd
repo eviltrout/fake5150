@@ -16,7 +16,7 @@ func _ready():
 
 	material = screen.get_surface_material(0)
 	image_tex = ImageTexture.new()
-	image_tex.create_from_image(image, 0)
+	image_tex.create_from_image(image, 4)
 
 	material.albedo_texture = image_tex
 
@@ -24,6 +24,6 @@ func update_texture():
 	image.create_from_data(320, 200, false, Image.FORMAT_RGB8, sarien.get_frame())
 	image_tex.set_data(image)
 
-func _process(delta: float):
-	pc.rotate_y(delta * 0.1)
+func _process(_delta: float):
+#	pc.rotate_y(delta * 0.1)
 	update_texture()
