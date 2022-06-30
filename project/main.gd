@@ -25,5 +25,5 @@ func update_texture():
 	image_tex.set_data(image)
 
 func _process(delta: float):
-#	pc.rotate_y(delta * 0.1)
+	pc.rotate_y(delta * 0.1)
 	update_texture()
