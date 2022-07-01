@@ -1,0 +1,47 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://mesh/monitor.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://textures/monitor-roughness.png" type="Texture" id=2]
+[ext_resource path="res://mesh/screen.obj" type="ArrayMesh" id=3]
+[ext_resource path="res://textures/screen.material" type="Material" id=4]
+[ext_resource path="res://textures/monitor-ao.png" type="Texture" id=5]
+[ext_resource path="res://textures/monitor-albedo.png" type="Texture" id=6]
+[ext_resource path="res://mesh/pc.obj" type="ArrayMesh" id=7]
+[ext_resource path="res://textures/pc-albedo.png" type="Texture" id=8]
+[ext_resource path="res://textures/pc-ao.png" type="Texture" id=9]
+[ext_resource path="res://textures/pc-roughness.png" type="Texture" id=10]
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_texture = ExtResource( 6 )
+roughness_texture = ExtResource( 2 )
+ao_enabled = true
+ao_light_affect = 0.0
+ao_texture = ExtResource( 5 )
+ao_on_uv2 = false
+ao_texture_channel = 0
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_texture = ExtResource( 8 )
+roughness_texture = ExtResource( 10 )
+ao_enabled = true
+ao_light_affect = 0.0
+ao_texture = ExtResource( 9 )
+ao_on_uv2 = false
+ao_texture_channel = 0
+
+[node name="PC" type="Spatial"]
+
+[node name="monitor" type="MeshInstance" parent="."]
+mesh = ExtResource( 1 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 5 )
+
+[node name="screen" type="MeshInstance" parent="."]
+mesh = ExtResource( 3 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 4 )
+
+[node name="pc" type="MeshInstance" parent="."]
+mesh = ExtResource( 7 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 6 )

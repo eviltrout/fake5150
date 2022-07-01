@@ -24,6 +24,10 @@ func update_texture():
 	image.create_from_data(320, 200, false, Image.FORMAT_RGB8, sarien.get_frame())
 	image_tex.set_data(image)
 
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		sarien.key_pressed(event.scancode)
+
 func _process(_delta: float):
-#	pc.rotate_y(delta * 0.1)
+#	pc.rotate_y(_delta * 0.1)
 	update_texture()

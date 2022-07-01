@@ -708,6 +708,7 @@ cmd(get_num) {
 	}
 
 	do {
+    et_log("get_string loop");
 		main_cycle ();
 	} while (game.input_mode == INPUT_GETSTRING);
 
@@ -1080,6 +1081,10 @@ int run_logic (int n)
 	UINT8 p[CMD_BSIZE] = { 0 };
 	UINT8 *code = NULL;
 	int num	= 0;
+  int debug = 0;
+  if (n == 69) {
+    debug = 1;
+  }
 
 	/* If logic not loaded, load it */
 	if (~game.dir_logic[n].flags & RES_LOADED) {

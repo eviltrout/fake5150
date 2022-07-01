@@ -109,7 +109,7 @@ static UINT8 test_keypressed ()
 		game.input_mode = INPUT_NONE;
 		main_cycle ();
 		game.input_mode = mode;
-	}
+  }
 
 	if (x) _D (_D_WARN "keypress = %02x", x);
 

@@ -125,7 +125,6 @@ int handle_controller (int key)
 
 	for (i = 0; i < MAX_DIRS; i++) {
 		if (game.ev_keyp[i].data == key) {
-			_D ("event %d: key press", i);
 			game.ev_keyp[i].occured = TRUE;
 			report ("event AC:%i occured\n", i);
 			return TRUE;
@@ -141,21 +140,16 @@ int handle_controller (int key)
 	}
 #endif
 
+
 	if (game.player_control) {
 		int d = 0;
 
-		if (!KEY_ASCII (key)) {
-			switch (key) {
-			case KEY_UP:         d = 1; break;
-			case KEY_DOWN:       d = 5; break;
-			case KEY_LEFT:       d = 7; break;
-			case KEY_RIGHT:      d = 3; break;
-			case KEY_UP_RIGHT:   d = 2; break;
-			case KEY_DOWN_RIGHT: d = 4; break;
-			case KEY_UP_LEFT:    d = 8; break;
-			case KEY_DOWN_LEFT:  d = 6; break;
-			}
-		}
+    switch (KEY_ASCII(key)) {
+    case 16:         d = 1; break;
+    case 18:       d = 5; break;
+    case 15:       d = 7; break;
+    case 17:      d = 3; break;
+    }
 
 #ifdef USE_MOUSE
 		if (!opt.agimouse) {
@@ -254,7 +248,7 @@ void handle_keys (int key)
 
 	setvar (V_word_not_found, 0);
 
-	_D ("handling key: %02x", key);
+	et_log("handling key: %02x", key);
 
 	switch (key) {
 	case KEY_ENTER:

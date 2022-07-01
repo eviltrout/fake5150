@@ -194,10 +194,57 @@ void old_input_mode ()
 /* If main_cycle returns FALSE, don't process more events! */
 int main_cycle ()
 {
+  unsigned int key, kascii;
   poll_timer ();    /* msdos driver -> does nothing */
   update_timer ();
 
   console_cycle ();
+
+  key = do_poll_keyboard();
+  kascii = KEY_ASCII (key);
+  if (kascii) setvar (V_key, kascii);
+process_key:
+    switch (game.input_mode) {
+    case INPUT_GETSTRING:
+      handle_controller (key);
+      handle_getstring (key);
+      setvar (V_key, 0);  /* clear ENTER key */
+      break;
+    case INPUT_NONE:
+      handle_controller (key);
+      if (key) game.keypress = key;
+      break;
+    }
+
+    switch (game.input_mode) {
+    case INPUT_NORMAL:
+      if (!handle_controller (key)) {
+        if (key == 0 || !game.input_enabled)
+          break;
+        handle_keys (key);
+
+        /* if ESC pressed, activate menu before
+         * accept.input from the interpreter cycle
+         * sets the input mode to normal again
+         * (closes: #540856)
+         */
+        if (key == KEY_ESCAPE) {
+          key = 0;
+          goto process_key;
+        }
+
+        /* commented out to close bug #438872
+         * if (key) game.keypress = key;
+         */
+      }
+      break;
+    case INPUT_MENU:
+      et_log("input_menu");
+      break;
+      menu_keyhandler (key);
+      console_cycle ();
+      return FALSE;
+    }
 
   if (game.msg_box_ticks > 0)
     game.msg_box_ticks--;

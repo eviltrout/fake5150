@@ -9,9 +9,16 @@
 #include "graphics.h"
 #include "sprite.h"
 
+#define KEY_BUFFER_SIZE 100
+
 typedef struct user_data_struct {
 	godot_pool_byte_array vram;
+  unsigned int keyboard_buffer[KEY_BUFFER_SIZE];
+  int key_index;
+  int key_size;
 } user_data_struct;
+
+user_data_struct *current_data;
 
 unsigned char godot_pal[16*3] = { 0 };
 
@@ -40,12 +47,12 @@ static struct gfx_driver gfx_godot = {
 };
 extern struct gfx_driver *gfx;
 
-
 const godot_gdnative_core_api_struct *api = NULL;
 const godot_gdnative_ext_nativescript_api_struct *nativescript_api = NULL;
 GDCALLINGCONV void *sarien_constructor(godot_object *p_instance, void *p_method_data);
 GDCALLINGCONV void sarien_destructor(godot_object *p_instance, void *p_method_data, void *p_user_data);
 godot_variant sarien_get_frame(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args);
+godot_variant sarien_key_pressed(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args);
 
 void init_sarien(user_data_struct *user_data);
 void sarien_tick(void);
@@ -56,6 +63,10 @@ void log_it(char* msg) {
   api->godot_string_parse_utf8(&str, msg);
   api->godot_print(&str);
   api->godot_string_destroy(&str);
+
+  FILE *f = fopen("/tmp/sarien.log", "a");
+  fprintf(f, "log: %s\n", msg);
+  fclose(f);
 }
 
 void report(char *fmt, ...) {
@@ -192,10 +203,20 @@ static void godot_timer (void) {
 }
 
 int godot_is_keypress (void) {
-  return 0;
+  return current_data->key_index < current_data->key_size;
 }
+
 int godot_get_keypress(void) {
-  return 0;
+  unsigned int result = current_data->keyboard_buffer[current_data->key_index];
+  current_data->key_index++;
+
+  // If we finished the buffer, clear it
+  if (current_data->key_index >= current_data->key_size) {
+    current_data->key_size = 0;
+    current_data->key_index = 0;
+  }
+
+  return result;
 }
 
 static void interpret_cycle ()
@@ -302,10 +323,15 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	get_frame.method = &sarien_get_frame;
 	godot_method_attributes attributes = { GODOT_METHOD_RPC_MODE_DISABLED };
 	nativescript_api->godot_nativescript_register_method(p_handle, "SARIEN", "get_frame", attributes, get_frame);
+
+  godot_instance_method key_pressed = { NULL, NULL, NULL };
+	key_pressed.method = &sarien_key_pressed;
+	nativescript_api->godot_nativescript_register_method(p_handle, "SARIEN", "key_pressed", attributes, key_pressed);
 }
 
 GDCALLINGCONV void *sarien_constructor(godot_object *p_instance, void *p_method_data) {
 	user_data_struct *user_data = api->godot_alloc(sizeof(user_data_struct));
+  memset(user_data, 0, sizeof(user_data_struct));
 	api->godot_pool_byte_array_new(&user_data->vram);
 	api->godot_pool_byte_array_resize(&user_data->vram, 320*200*3);
   init_sarien(user_data);
@@ -319,9 +345,23 @@ GDCALLINGCONV void sarien_destructor(godot_object *p_instance, void *p_method_da
 	api->godot_free(p_user_data);
 }
 
+godot_variant sarien_key_pressed(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+  godot_variant ret;
+	user_data_struct *user_data = (user_data_struct *)p_user_data;
+
+  if (user_data->key_size > KEY_BUFFER_SIZE - 1) {
+    et_log("error: keyboard buffer full");
+    return ret;
+  }
+
+  user_data->keyboard_buffer[user_data->key_size++] = api->godot_variant_as_uint(p_args[0]);
+  return ret;
+}
+
 godot_variant sarien_get_frame(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
 	godot_variant ret;
 	user_data_struct *user_data = (user_data_struct *)p_user_data;
+  current_data = user_data;
 
 	godot_pool_byte_array_write_access *write = api->godot_pool_byte_array_write(&user_data->vram);
 	vram_ptr = api->godot_pool_byte_array_write_access_ptr(write);
@@ -331,5 +371,6 @@ godot_variant sarien_get_frame(godot_object *p_instance, void *p_method_data, vo
 
 	api->godot_variant_new_pool_byte_array(&ret, &user_data->vram);
 
+  current_data = NULL;
 	return ret;
 }
