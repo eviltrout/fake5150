@@ -196,10 +196,13 @@ void old_input_mode ()
 /* If main_cycle returns FALSE, don't process more events! */
 int main_cycle ()
 {
+  static int _cycles = 0;
+
   if (!_running) {
     game.input_mode = INPUT_NONE;
     return 0;
   }
+
   unsigned int key, kascii;
   poll_timer ();    /* msdos driver -> does nothing */
   update_timer ();
@@ -245,8 +248,6 @@ process_key:
       }
       break;
     case INPUT_MENU:
-      et_log("input_menu");
-      break;
       menu_keyhandler (key);
       console_cycle ();
       return FALSE;

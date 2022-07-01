@@ -144,12 +144,16 @@ int handle_controller (int key)
 	if (game.player_control) {
 		int d = 0;
 
-    switch (KEY_ASCII(key)) {
-    case 16:         d = 1; break;
-    case 18:       d = 5; break;
-    case 15:       d = 7; break;
-    case 17:      d = 3; break;
-    }
+			switch (key) {
+				case KEY_UP:         d = 1; break;
+				case KEY_DOWN:       d = 5; break;
+				case KEY_LEFT:       d = 7; break;
+				case KEY_RIGHT:      d = 3; break;
+				case KEY_UP_RIGHT:   d = 2; break;
+				case KEY_DOWN_RIGHT: d = 4; break;
+				case KEY_UP_LEFT:    d = 8; break;
+				case KEY_DOWN_LEFT:  d = 6; break;
+			}
 
 #ifdef USE_MOUSE
 		if (!opt.agimouse) {

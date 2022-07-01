@@ -382,7 +382,7 @@ GDCALLINGCONV void sarien_destructor(godot_object *p_instance, void *p_method_da
   pthread_mutex_lock(&lock);
   _running = 0;
   pthread_mutex_unlock(&lock);
-  pthread_join(tid, NULL);
+  pthread_cancel(tid);
   pthread_mutex_destroy(&lock);
 }
 

@@ -708,7 +708,6 @@ cmd(get_num) {
 	}
 
 	do {
-    et_log("get_string loop");
 		main_cycle ();
 	} while (game.input_mode == INPUT_GETSTRING);
 
