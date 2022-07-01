@@ -6,6 +6,8 @@ This repo includes code from two other projects.
 
 `sarien/` is GPL v2.
 
+`projects/textures/crt.shaders` is CC0 and heavily based on pend00's work.
+
 Everything else is MIT:
 
 # MIT License

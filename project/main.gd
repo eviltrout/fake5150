@@ -17,22 +17,11 @@ func _ready():
 	material = screen.get_surface_material(0)
 	image_tex = ImageTexture.new()
 	image_tex.create_from_image(image, 4)
-
-	material.albedo_texture = image_tex
+	material.set_shader_param("texture_albedo", image_tex)
 
 func update_texture():
 	image.create_from_data(320, 200, false, Image.FORMAT_RGB8, sarien.get_frame())
 	image_tex.set_data(image)
-
-#define KEY_STATIONARY  0x4C00
-
-#define KEY_DOWN_LEFT 0x4F00
-#define KEY_DOWN_RIGHT  0x5100
-#define KEY_UP_LEFT 0x4700
-#define KEY_UP_RIGHT  0x4900
-
-#define KEY_STATUSLN  0xd900
-#define KEY_PRIORITY  0xda00
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
@@ -54,5 +43,5 @@ func _input(event):
 		sarien.key_pressed(code)
 
 func _process(_delta: float):
-#	pc.rotate_y(_delta * 0.1)
+#	pc.rotate_y(_delta * 0.5)
 	update_texture()
