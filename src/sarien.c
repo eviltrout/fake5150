@@ -9,6 +9,8 @@
 #include "graphics.h"
 #include "sprite.h"
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 #define KEY_BUFFER_SIZE 100
 
@@ -25,6 +27,9 @@ static int loaded_sarien = 0;
 unsigned int keyboard_buffer[KEY_BUFFER_SIZE];
 int key_index;
 int key_size;
+
+static struct timeval last;
+static struct timeval now;
 
 struct sarien_options opt;
 struct agi_game game;
@@ -166,6 +171,7 @@ void init_sarien(user_data_struct *user_data) {
     game.vars[V_key] = 0;
   }
 
+  gettimeofday(&last, 0);
   pthread_mutex_init(&lock, NULL);
   pthread_create(&tid, NULL, &sarien_run, NULL);
 }
@@ -202,7 +208,21 @@ static void godot_putpixels  (int x, int y, int w, unsigned char *pixels) {
   pthread_mutex_unlock(&lock);
 }
 
+float timedifference_msec(struct timeval t0, struct timeval t1)
+{
+  return (t1.tv_sec - t0.tv_sec) * 1000.0f + (t1.tv_usec - t0.tv_usec) / 1000.0f;
+}
 static void godot_timer (void) {
+  gettimeofday(&now, 0);
+  float elapsed = timedifference_msec(last, now);
+
+  while (elapsed < 50) {
+    usleep(5);
+    gettimeofday(&now, 0);
+    elapsed = timedifference_msec(last, now);
+  }
+
+  last = now;
 }
 
 int godot_is_keypress (void) {
@@ -270,6 +290,8 @@ static void interpret_cycle ()
 int _running = 1;
 void* sarien_run(void * _ignored) {
   et_log("sarien run");
+  int is_running = 0;
+
   while(_running) {
     sarien_tick();
   }
@@ -357,7 +379,9 @@ GDCALLINGCONV void sarien_destructor(godot_object *p_instance, void *p_method_da
 	user_data_struct *user_data = (user_data_struct*) p_user_data;
 	api->godot_pool_byte_array_destroy(&vram);
 	api->godot_free(p_user_data);
+  pthread_mutex_lock(&lock);
   _running = 0;
+  pthread_mutex_unlock(&lock);
   pthread_join(tid, NULL);
   pthread_mutex_destroy(&lock);
 }
