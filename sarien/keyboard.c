@@ -248,8 +248,6 @@ void handle_keys (int key)
 
 	setvar (V_word_not_found, 0);
 
-	et_log("handling key: %02x", key);
-
 	switch (key) {
 	case KEY_ENTER:
 		_D (("KEY_ENTER"));
