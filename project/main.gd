@@ -21,6 +21,7 @@ func _ready():
 	material.albedo_texture = image_tex
 
 func update_texture():
+
 	image.create_from_data(320, 200, false, Image.FORMAT_RGB8, sarien.get_frame())
 	image_tex.set_data(image)
 

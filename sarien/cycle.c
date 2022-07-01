@@ -29,6 +29,7 @@ volatile UINT32 clock_ticks;
 volatile UINT32 clock_count;
 #endif
 
+extern int _running;
 
 /**
  * Set up new room.
@@ -191,9 +192,14 @@ void old_input_mode ()
 }
 
 
+
 /* If main_cycle returns FALSE, don't process more events! */
 int main_cycle ()
 {
+  if (!_running) {
+    game.input_mode = INPUT_NONE;
+    return 0;
+  }
   unsigned int key, kascii;
   poll_timer ();    /* msdos driver -> does nothing */
   update_timer ();

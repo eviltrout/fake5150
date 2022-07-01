@@ -8,25 +8,27 @@
 #include "text.h"
 #include "graphics.h"
 #include "sprite.h"
+#include <pthread.h>
 
 #define KEY_BUFFER_SIZE 100
 
 typedef struct user_data_struct {
-	godot_pool_byte_array vram;
-  unsigned int keyboard_buffer[KEY_BUFFER_SIZE];
-  int key_index;
-  int key_size;
 } user_data_struct;
 
-user_data_struct *current_data;
+pthread_t tid;
+pthread_mutex_t lock;
 
 unsigned char godot_pal[16*3] = { 0 };
 
 static int loaded_sarien = 0;
 
+unsigned int keyboard_buffer[KEY_BUFFER_SIZE];
+int key_index;
+int key_size;
+
 struct sarien_options opt;
 struct agi_game game;
-static unsigned char* vram_ptr;
+static godot_pool_byte_array vram;
 
 static int  init_vidmode  (void);
 static int  deinit_vidmode  (void);
@@ -56,6 +58,7 @@ godot_variant sarien_key_pressed(godot_object *p_instance, void *p_method_data, 
 
 void init_sarien(user_data_struct *user_data);
 void sarien_tick(void);
+void* sarien_run(void*);
 
 void log_it(char* msg) {
 	godot_string str;
@@ -91,9 +94,6 @@ void init_sarien(user_data_struct *user_data) {
   if (loaded_sarien) {
     return;
   }
-	godot_pool_byte_array_write_access *write = api->godot_pool_byte_array_write(&user_data->vram);
-	vram_ptr = api->godot_pool_byte_array_write_access_ptr(write);
-
   loaded_sarien = 1;
 
   memset (&opt, 0, sizeof (struct sarien_options));
@@ -165,8 +165,9 @@ void init_sarien(user_data_struct *user_data) {
     game.vars[V_word_not_found] = 0;
     game.vars[V_key] = 0;
   }
-	api->godot_pool_byte_array_write_access_destroy(write);
-  vram_ptr = NULL;
+
+  pthread_mutex_init(&lock, NULL);
+  pthread_create(&tid, NULL, &sarien_run, NULL);
 }
 
 static int init_vidmode  (void) {
@@ -184,12 +185,12 @@ static int deinit_vidmode  (void) {
 }
 
 static void godot_put_block (int x1, int y1, int x2, int y2) {
-  if (vram_ptr == NULL) {
-    return;
-  }
 }
 
 static void godot_putpixels  (int x, int y, int w, unsigned char *pixels) {
+  pthread_mutex_lock(&lock);
+	godot_pool_byte_array_write_access *write = api->godot_pool_byte_array_write(&vram);
+	unsigned char *vram_ptr = api->godot_pool_byte_array_write_access_ptr(write);
   unsigned char *v = vram_ptr + ((y * 320) + x) * 3;
   for (int i=0; i<w; i++) {
     unsigned char *c = godot_pal + (*(pixels++) * 3);
@@ -197,24 +198,28 @@ static void godot_putpixels  (int x, int y, int w, unsigned char *pixels) {
     *(v++) = *(c++);
     *(v++) = *(c++);
   }
+	api->godot_pool_byte_array_write_access_destroy(write);
+  pthread_mutex_unlock(&lock);
 }
 
 static void godot_timer (void) {
 }
 
 int godot_is_keypress (void) {
-  return current_data->key_index < current_data->key_size;
+  return key_index < key_size;
 }
 
 int godot_get_keypress(void) {
-  unsigned int result = current_data->keyboard_buffer[current_data->key_index];
-  current_data->key_index++;
+  pthread_mutex_lock(&lock);
+  unsigned int result = keyboard_buffer[key_index];
+  key_index++;
 
   // If we finished the buffer, clear it
-  if (current_data->key_index >= current_data->key_size) {
-    current_data->key_size = 0;
-    current_data->key_index = 0;
+  if (key_index >= key_size) {
+    key_size = 0;
+    key_index = 0;
   }
+  pthread_mutex_unlock(&lock);
 
   return result;
 }
@@ -260,6 +265,15 @@ static void interpret_cycle ()
     update_viewtable ();
     do_update ();
   }
+}
+
+int _running = 1;
+void* sarien_run(void * _ignored) {
+  et_log("sarien run");
+  while(_running) {
+    sarien_tick();
+  }
+  return NULL;
 }
 
 void sarien_tick(void) {
@@ -332,8 +346,8 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 GDCALLINGCONV void *sarien_constructor(godot_object *p_instance, void *p_method_data) {
 	user_data_struct *user_data = api->godot_alloc(sizeof(user_data_struct));
   memset(user_data, 0, sizeof(user_data_struct));
-	api->godot_pool_byte_array_new(&user_data->vram);
-	api->godot_pool_byte_array_resize(&user_data->vram, 320*200*3);
+	api->godot_pool_byte_array_new(&vram);
+	api->godot_pool_byte_array_resize(&vram, 320*200*3);
   init_sarien(user_data);
 
 	return user_data;
@@ -341,36 +355,33 @@ GDCALLINGCONV void *sarien_constructor(godot_object *p_instance, void *p_method_
 
 GDCALLINGCONV void sarien_destructor(godot_object *p_instance, void *p_method_data, void *p_user_data) {
 	user_data_struct *user_data = (user_data_struct*) p_user_data;
-	api->godot_pool_byte_array_destroy(&user_data->vram);
+	api->godot_pool_byte_array_destroy(&vram);
 	api->godot_free(p_user_data);
+  _running = 0;
+  pthread_join(tid, NULL);
+  pthread_mutex_destroy(&lock);
 }
 
 godot_variant sarien_key_pressed(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
   godot_variant ret;
-	user_data_struct *user_data = (user_data_struct *)p_user_data;
 
-  if (user_data->key_size > KEY_BUFFER_SIZE - 1) {
+  pthread_mutex_lock(&lock);
+  if (key_size > KEY_BUFFER_SIZE - 1) {
     et_log("error: keyboard buffer full");
     return ret;
   }
 
-  user_data->keyboard_buffer[user_data->key_size++] = api->godot_variant_as_uint(p_args[0]);
+  keyboard_buffer[key_size++] = api->godot_variant_as_uint(p_args[0]);
+  pthread_mutex_unlock(&lock);
   return ret;
 }
 
 godot_variant sarien_get_frame(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
 	godot_variant ret;
-	user_data_struct *user_data = (user_data_struct *)p_user_data;
-  current_data = user_data;
 
-	godot_pool_byte_array_write_access *write = api->godot_pool_byte_array_write(&user_data->vram);
-	vram_ptr = api->godot_pool_byte_array_write_access_ptr(write);
-  sarien_tick();
-	api->godot_pool_byte_array_write_access_destroy(write);
-  vram_ptr = NULL;
+  pthread_mutex_lock(&lock);
+	api->godot_variant_new_pool_byte_array(&ret, &vram);
+  pthread_mutex_unlock(&lock);
 
-	api->godot_variant_new_pool_byte_array(&ret, &user_data->vram);
-
-  current_data = NULL;
 	return ret;
 }
