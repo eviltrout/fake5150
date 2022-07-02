@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://mesh/monitor.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://textures/monitor-roughness.png" type="Texture" id=2]
@@ -32,6 +32,51 @@ ao_texture = ExtResource( 9 )
 ao_on_uv2 = false
 ao_texture_channel = 0
 
+[sub_resource type="Animation" id=7]
+resource_name = "Boot"
+length = 6.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("screen:material/0:shader_param/albedo")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 2, 3.1, 5, 6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 0, 0, 0, 1 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 6 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "emit_booted"
+} ]
+}
+
+[sub_resource type="Animation" id=8]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("screen:material/0:shader_param/albedo")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 1 ) ]
+}
+
 [node name="PC" type="Spatial"]
 script = ExtResource( 13 )
 
@@ -56,5 +101,9 @@ transform = Transform( -1.13216e-08, 0, -0.38347, 0, 0.38347, 0, 0.259008, 0, -1
 [node name="BootSound" type="AudioStreamPlayer3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.086316, 0.878077 )
 stream = ExtResource( 12 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Boot = SubResource( 7 )
+anims/RESET = SubResource( 8 )
 
 [connection signal="booting" from="switch" to="." method="_on_switch_booting"]

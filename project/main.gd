@@ -35,6 +35,7 @@ func start_sarien():
 	image_tex = ImageTexture.new()
 	image_tex.create_from_image(image, 4)
 	material.set_shader_param("texture_albedo", image_tex)
+	material.set_shader_param("albedo", Color(1.0, 1.0, 1.0, 1.0))
 
 func update_texture():
 	if started_sarien:
@@ -95,3 +96,7 @@ func _process(delta: float):
 
 
 	update_texture()
+
+
+func _on_PC_booted():
+	start_sarien()

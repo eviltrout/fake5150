@@ -1,4 +1,6 @@
-# Note
+# Fake PC Licenses
+
+The IBM logo is a trademark of IBM.
 
 The following subdirectories have their own licenses.
 

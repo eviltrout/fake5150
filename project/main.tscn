@@ -27,3 +27,5 @@ light_energy = 0.5
 environment = SubResource( 4 )
 
 [node name="PC" parent="." instance=ExtResource( 2 )]
+
+[connection signal="booted" from="PC" to="." method="_on_PC_booted"]
