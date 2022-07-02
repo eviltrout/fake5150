@@ -1,14 +1,16 @@
 # Note
 
-This repo includes code from two other projects. 
-
-`godot-headers/` is MIT.
+The following subdirectories have their own licenses.
 
 `sarien/` is GPL v2.
 
 `projects/textures/crt.shaders` is CC0 and heavily based on pend00's work.
 
-Everything else is MIT:
+`projects/audio/` is part of the Adobe Software License Agreement. Sounds are included here as part of the application but must not be redistributed on a standalone basis:
+
+> Subject to the restrictions stated in the EULA, you may use, display, modify, reproduce, and distribute the associated Content File. However, you may not distribute the Content File on a standalone basi s (i.e., in circumstances in which the Content File constitute the primary value of the product being distributed), and Customer may not claim any trademark rights in the Content File or derivative works thereof.
+
+Everything else is MIT.
 
 # MIT License
 

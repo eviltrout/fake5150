@@ -16,7 +16,7 @@ glow_high_quality = true
 script = ExtResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.995916, 0.0902849, 0, -0.0902849, 0.995916, -0.081, 0.791, 1.213 )
+transform = Transform( 0.49558, -0.0799881, 0.864871, 0, 0.99575, 0.0920925, -0.868562, -0.0456392, 0.493474, 2.69057, 0.611, -0.00310135 )
 current = true
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]

@@ -15,7 +15,7 @@ render_mode unshaded;
 uniform sampler2D texture_albedo : hint_albedo;
 uniform float scanlines_opacity : hint_range(0.0, 1.0) = 0.3;
 uniform float scanlines_width : hint_range(0.0, 0.5) = 0.25;
-uniform float grille_opacity : hint_range(0.0, 1.0) = 0.1;
+uniform float grille_opacity : hint_range(0.0, 1.0) = 0.0;
 uniform vec2 resolution = vec2(320.0, 200.0);
 uniform float brightness = 1.0;
 uniform float vignette_intensity = 0.4; // Size of the vignette, how far towards the middle it should go.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://mesh/monitor.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://textures/monitor-roughness.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://textures/pc-albedo.png" type="Texture" id=8]
 [ext_resource path="res://textures/pc-ao.png" type="Texture" id=9]
 [ext_resource path="res://textures/pc-roughness.png" type="Texture" id=10]
+[ext_resource path="res://switch.tscn" type="PackedScene" id=11]
 
 [sub_resource type="SpatialMaterial" id=5]
 albedo_texture = ExtResource( 6 )
@@ -45,3 +46,6 @@ material/0 = ExtResource( 4 )
 mesh = ExtResource( 7 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 6 )
+
+[node name="switch" parent="." instance=ExtResource( 11 )]
+transform = Transform( -1.13216e-08, 0, -0.38347, 0, 0.38347, 0, 0.259008, 0, -1.6762e-08, 0.93533, -0.0934656, -0.910335 )
