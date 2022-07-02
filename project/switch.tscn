@@ -2,7 +2,7 @@
 
 [ext_resource path="res://mesh/switch.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://switch.gd" type="Script" id=2]
-[ext_resource path="res://audio/switch.wav" type="AudioStream" id=3]
+[ext_resource path="res://audio/584214__atlas72__switch-on-24bit.wav" type="AudioStream" id=3]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 1, 0, 0, 1 )
@@ -38,6 +38,20 @@ tracks/0/keys = {
 "update": 0,
 "values": [ Vector3( -30, 0, 0 ), Vector3( 30, 0, 0 ) ]
 }
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "switch_up"
+} ]
+}
 
 [sub_resource type="BoxShape" id=4]
 
@@ -65,5 +79,6 @@ shape = SubResource( 4 )
 
 [node name="click" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 3 )
+unit_db = 2.0
 
 [connection signal="input_event" from="Area" to="." method="_on_Area_input_event"]

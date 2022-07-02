@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://mesh/monitor.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://textures/monitor-roughness.png" type="Texture" id=2]
@@ -11,6 +11,8 @@
 [ext_resource path="res://textures/pc-ao.png" type="Texture" id=9]
 [ext_resource path="res://textures/pc-roughness.png" type="Texture" id=10]
 [ext_resource path="res://switch.tscn" type="PackedScene" id=11]
+[ext_resource path="res://audio/550456__607freesound__old-desktop-pc-booting_01.wav" type="AudioStream" id=12]
+[ext_resource path="res://fakepc.gd" type="Script" id=13]
 
 [sub_resource type="SpatialMaterial" id=5]
 albedo_texture = ExtResource( 6 )
@@ -31,6 +33,7 @@ ao_on_uv2 = false
 ao_texture_channel = 0
 
 [node name="PC" type="Spatial"]
+script = ExtResource( 13 )
 
 [node name="monitor" type="MeshInstance" parent="."]
 mesh = ExtResource( 1 )
@@ -49,3 +52,9 @@ material/0 = SubResource( 6 )
 
 [node name="switch" parent="." instance=ExtResource( 11 )]
 transform = Transform( -1.13216e-08, 0, -0.38347, 0, 0.38347, 0, 0.259008, 0, -1.6762e-08, 0.93533, -0.0934656, -0.910335 )
+
+[node name="BootSound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.086316, 0.878077 )
+stream = ExtResource( 12 )
+
+[connection signal="booting" from="switch" to="." method="_on_switch_booting"]
