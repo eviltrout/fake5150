@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/disk-light.obj-d9a5eb632d87b8938340f982c6652fd3.mesh"
+
+[deps]
+
+files=[ "res://.import/disk-light.obj-d9a5eb632d87b8938340f982c6652fd3.mesh" ]
+
+source_file="res://mesh/disk-light.obj"
+dest_files=[ "res://.import/disk-light.obj-d9a5eb632d87b8938340f982c6652fd3.mesh", "res://.import/disk-light.obj-d9a5eb632d87b8938340f982c6652fd3.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=4286

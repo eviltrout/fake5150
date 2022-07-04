@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/lampstand.obj-ab95a235e16bb4d2b34f13140d6df5ba.mesh"
+
+[deps]
+
+files=[ "res://.import/lampstand.obj-ab95a235e16bb4d2b34f13140d6df5ba.mesh" ]
+
+source_file="res://mesh/lampstand.obj"
+dest_files=[ "res://.import/lampstand.obj-ab95a235e16bb4d2b34f13140d6df5ba.mesh", "res://.import/lampstand.obj-ab95a235e16bb4d2b34f13140d6df5ba.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=4286

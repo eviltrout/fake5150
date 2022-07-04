@@ -2,6 +2,8 @@
 
 The IBM logo is a trademark of IBM.
 
+The movie posters are copyright from their respective studios/creators/artists.
+
 The following subdirectories have their own licenses.
 
 `sarien/` is GPL v2.

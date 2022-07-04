@@ -14,11 +14,11 @@ const SARIEN = preload("res://gdnative/sarien.gdns")
 onready var sarien
 
 const TURN_SPEED = 2.0
-const ZOOM_SPEED = 2.0
+const ZOOM_SPEED = 3.0
 const ZOOM_FRICTION = 0.9
 
-var ang: float = PI/2
-var rad: float = 3.0
+var ang: float = PI/2 - 0.2
+var rad: float = 5.0
 var zoom_speed: float = 0.0
 
 var panning: bool = false
