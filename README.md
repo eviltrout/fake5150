@@ -1,6 +1,9 @@
 # Fake IBM 5150
 
-This is a tribute to the IBM PC 5150, the first computer I ever used.
+This is a tribute to the IBM PC 5150, the first computer I ever used. It
+accompanies this YouTube video:
+
+https://youtu.be/JMWnAJXnrW4
 
 ### Usage
 
